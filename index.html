@@ -61,7 +61,7 @@
     }
 
     .price-list {
-      display: flex;
+      : flex;
       justify-content: space-between;
       gap: 15px;
       margin-top: 10px;
@@ -77,7 +77,7 @@
     }
 
     .price-item strong {
-      display: block;
+      : block;
       color: #764ba2;
       font-size: 18px;
       margin-bottom: 5px;
@@ -330,42 +330,49 @@
     });
     
     function displayResult(data) {
-      const resultDiv = document.getElementById('result');
-      
-      // Format currency ke Rupiah
-      const formatRupiah = (number) => {
-        return new Intl.NumberFormat('id-ID', {
-          style: 'currency',
-          currency: 'IDR',
-          minimumFractionDigits: 0
-        }).format(number);
-      };
-      
-      resultDiv.innerHTML = `
-        <h3 style="color: #667eea; margin-bottom: 15px;">📊 Hasil Estimasi</h3>
-        <div class="result-item">
-          <span class="result-label">Jumlah Peserta</span>
-          <span class="result-value">${data.jumlah} orang</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label">Jenis Konsumsi</span>
-          <span class="result-value">${data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)}</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label">Harga per Peserta</span>
-          <span class="result-value">${formatRupiah(data.harga_per_peserta)}</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label">Total Estimasi Biaya</span>
-          <span class="result-value">${formatRupiah(data.total)}</span>
-        </div>
-        <div class="timestamp">
-          🕐 Estimasi dibuat: ${new Date(data.timestamp).toLocaleString('id-ID')}
-        </div>
-      `;
-      
-      resultDiv.classList.add('show');
-    }
+  const resultDiv = document.getElementById('result');
+  
+  // Format currency ke Rupiah
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    }).format(number);
+  };
+  
+  // Gunakan field yang sesuai dengan response dari backend
+  const jumlahPeserta = data.jumlah_peserta || data.jumlah || 0;
+  const jenisKonsumsi = data.jenis_konsumsi || data.jenis || 'Tidak diketahui';
+  const hargaPerPeserta = data.harga_per_peserta || 0;
+  const totalBiaya = data.total_estimasi_biaya || data.total || 0;
+  const timestamp = data.timestamp || new Date().toISOString();
+  
+  resultDiv.innerHTML = `
+    <h3 style="color: #667eea; margin-bottom: 15px;">📊 Hasil Estimasi</h3>
+    <div class="result-item">
+      <span class="result-label">Jumlah Peserta</span>
+      <span class="result-value">${jumlahPeserta} orang</span>
+    </div>
+    <div class="result-item">
+      <span class="result-label">Jenis Konsumsi</span>
+      <span class="result-value">${jenisKonsumsi.charAt(0).toUpperCase() + jenisKonsumsi.slice(1)}</span>
+    </div>
+    <div class="result-item">
+      <span class="result-label">Harga per Peserta</span>
+      <span class="result-value">${formatRupiah(hargaPerPeserta)}</span>
+    </div>
+    <div class="result-item">
+      <span class="result-label">Total Estimasi Biaya</span>
+      <span class="result-value">${formatRupiah(totalBiaya)}</span>
+    </div>
+    <div class="timestamp">
+      🕐 Estimasi dibuat: ${new Date(timestamp).toLocaleString('id-ID')}
+    </div>
+  `;
+  
+  resultDiv.classList.add('show');
+}
     
     function showError(message) {
       const errorDiv = document.getElementById('error');
