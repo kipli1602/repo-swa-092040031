@@ -2,21 +2,386 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Praktikum Azure Static Web Apps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Estimasi Biaya Konsumsi Mahasiswa</title>
   <style>
-    body { font-family: Arial; margin: 40px; background: #f4f6f8; }
-    .container { background: white; padding: 24px; border-radius: 12px; }
-    h1 { color: #1f4e79; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .info-section {
+      background: #f0f4ff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+
+    .info-section h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+
+    .price-list {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .price-item {
+      flex: 1;
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .price-item strong {
+      display: block;
+      color: #764ba2;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .price-item small {
+      color: #666;
+      font-size: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .result.show {
+      display: block;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .result-value {
+      color: #764ba2;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #dee2e6;
+    }
+
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .footer {
+      background: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+
+    @media (max-width: 480px) {
+      .price-list {
+        flex-direction: column;
+      }
+      
+      .content {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Praktikum Azure Static Web Apps</h1>
-    <p>Halaman ini berhasil di-deploy menggunakan Azure Static Web Apps.</p>
-    <p>Layanan: Azure Static Web Apps</p>
-    <p>Deployment: GitHub Repository</p>
-     <p>Edit file index dari github</p>
-    <p>0920240031</p>
+    <div class="header">
+      <h1>🎓 Estimasi Biaya Konsumsi</h1>
+      <p>Sistem Informasi Kegiatan Mahasiswa</p>
+    </div>
+
+    <div class="content">
+      <div class="info-section">
+        <h3>📋 Daftar Harga per Peserta</h3>
+        <div class="price-list">
+          <div class="price-item">
+            <strong>🍪 Snack</strong>
+            <small>Rp 15.000</small>
+          </div>
+          <div class="price-item">
+            <strong>🍚 Makan</strong>
+            <small>Rp 30.000</small>
+          </div>
+          <div class="price-item">
+            <strong>🍽️ Lengkap</strong>
+            <small>Rp 45.000</small>
+          </div>
+        </div>
+      </div>
+
+      <form id="estimateForm">
+        <div class="form-group">
+          <label for="jumlah">Jumlah Peserta</label>
+          <input type="number" id="jumlah" name="jumlah" min="1" value="1" required placeholder="Masukkan jumlah peserta">
+        </div>
+
+        <div class="form-group">
+          <label for="jenis">Jenis Konsumsi</label>
+          <select id="jenis" name="jenis" required>
+            <option value="">Pilih jenis konsumsi</option>
+            <option value="snack">🍪 Snack (Rp 15.000)</option>
+            <option value="makan">🍚 Makan (Rp 30.000)</option>
+            <option value="lengkap">🍽️ Lengkap (Rp 45.000)</option>
+          </select>
+        </div>
+
+        <button type="submit">💰 Hitung Estimasi Biaya</button>
+      </form>
+
+      <div id="result" class="result"></div>
+      <div id="error" class="error"></div>
+    </div>
+
+    <div class="footer">
+      <p>📌 API Endpoint: /api/estimate | 🕐 Response dengan timestamp</p>
+      <p>0920240031 - Praktikum Azure Functions</p>
+    </div>
   </div>
+
+  <script>
+    // Ganti URL ini dengan URL Function App Anda setelah deploy
+    // Contoh: https://func-serverless-0920240031.azurewebsites.net/api/estimate
+    const API_BASE_URL = 'https://YOUR-FUNCTION-APP-NAME.azurewebsites.net/api';
+    
+    // Atau jika menggunakan local untuk testing:
+    // const API_BASE_URL = 'http://localhost:7071/api';
+
+    document.getElementById('estimateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const jumlah = document.getElementById('jumlah').value;
+      const jenis = document.getElementById('jenis').value;
+      
+      // Validasi input
+      if (!jumlah || jumlah < 1) {
+        showError('Jumlah peserta harus minimal 1');
+        return;
+      }
+      
+      if (!jenis) {
+        showError('Silakan pilih jenis konsumsi');
+        return;
+      }
+      
+      // Sembunyikan hasil dan error sebelumnya
+      document.getElementById('result').classList.remove('show');
+      document.getElementById('error').classList.remove('show');
+      
+      // Tampilkan loading
+      const button = document.querySelector('button');
+      const originalText = button.textContent;
+      button.textContent = '⏳ Menghitung...';
+      button.disabled = true;
+      
+      try {
+        // Panggil API Azure Functions
+        const response = await fetch(`${API_BASE_URL}/estimate?jumlah=${jumlah}&jenis=${jenis}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        displayResult(data);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showError(`Gagal menghubungi API: ${error.message}. Pastikan Function App sudah berjalan.`);
+      } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+      }
+    });
+    
+    function displayResult(data) {
+      const resultDiv = document.getElementById('result');
+      
+      // Format currency ke Rupiah
+      const formatRupiah = (number) => {
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0
+        }).format(number);
+      };
+      
+      resultDiv.innerHTML = `
+        <h3 style="color: #667eea; margin-bottom: 15px;">📊 Hasil Estimasi</h3>
+        <div class="result-item">
+          <span class="result-label">Jumlah Peserta</span>
+          <span class="result-value">${data.jumlah} orang</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Jenis Konsumsi</span>
+          <span class="result-value">${data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Harga per Peserta</span>
+          <span class="result-value">${formatRupiah(data.harga_per_peserta)}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Total Estimasi Biaya</span>
+          <span class="result-value">${formatRupiah(data.total)}</span>
+        </div>
+        <div class="timestamp">
+          🕐 Estimasi dibuat: ${new Date(data.timestamp).toLocaleString('id-ID')}
+        </div>
+      `;
+      
+      resultDiv.classList.add('show');
+    }
+    
+    function showError(message) {
+      const errorDiv = document.getElementById('error');
+      errorDiv.innerHTML = `
+        <strong>⚠️ Error:</strong> ${message}
+        <br><small>Tips: Pastikan Function App sudah dideploy dan URL API sudah benar.</small>
+      `;
+      errorDiv.classList.add('show');
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        errorDiv.classList.remove('show');
+      }, 5000);
+    }
+  </script>
 </body>
 </html>
