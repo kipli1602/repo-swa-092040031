@@ -19,7 +19,7 @@
     }
 
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
       background: white;
       border-radius: 20px;
@@ -44,8 +44,42 @@
       font-size: 14px;
     }
 
+    .badge-praktikum {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
     .content {
       padding: 30px;
+    }
+
+    .identity-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      border-left: 4px solid #764ba2;
+    }
+
+    .identity-card h4 {
+      color: #764ba2;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .identity-card p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .identity-card .nim {
+      font-weight: bold;
+      color: #667eea;
     }
 
     .info-section {
@@ -61,7 +95,7 @@
     }
 
     .price-list {
-      : flex;
+      display: flex;
       justify-content: space-between;
       gap: 15px;
       margin-top: 10px;
@@ -77,7 +111,7 @@
     }
 
     .price-item strong {
-      : block;
+      display: block;
       color: #764ba2;
       font-size: 18px;
       margin-bottom: 5px;
@@ -202,6 +236,39 @@
       display: block;
     }
 
+    .azure-services {
+      background: #e8f4f8;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .azure-services h4 {
+      color: #0078D4;
+      margin-bottom: 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .service-tag {
+      background: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #0078D4;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
     .footer {
       background: #f8f9fa;
       padding: 20px;
@@ -226,9 +293,19 @@
     <div class="header">
       <h1>🎓 Estimasi Biaya Konsumsi</h1>
       <p>Sistem Informasi Kegiatan Mahasiswa</p>
+      <div class="badge-praktikum">Praktikum Azure Serverless</div>
     </div>
 
     <div class="content">
+      <!-- Kartu Identitas Mahasiswa -->
+      <div class="identity-card">
+        <h4>👨‍🎓 Identitas Praktikum</h4>
+        <p><strong>Nama Mahasiswa:</strong> [NAMA LENGKAP ANDA]</p>
+        <p><strong>NIM:</strong> <span class="nim">0920240031</span></p>
+        <p><strong>Mata Kuliah:</strong> Praktikum Cloud Computing</p>
+        <p><strong>Program Studi:</strong> [PRODI ANDA]</p>
+      </div>
+
       <div class="info-section">
         <h3>📋 Daftar Harga per Peserta</h3>
         <div class="price-list">
@@ -268,19 +345,32 @@
 
       <div id="result" class="result"></div>
       <div id="error" class="error"></div>
+
+      <!-- Daftar Layanan Azure yang Digunakan -->
+      <div class="azure-services">
+        <h4>
+          <span>☁️</span> Layanan Microsoft Azure yang Digunakan
+        </h4>
+        <div class="service-tags">
+          <span class="service-tag">Azure Static Web Apps</span>
+          <span class="service-tag">Azure Functions (Managed Functions)</span>
+          <span class="service-tag">GitHub Actions (CI/CD)</span>
+        </div>
+        <p style="font-size: 11px; color: #666; margin-top: 10px;">
+          ⚡ Deployment otomatis dari GitHub repository | 🚀 Serverless architecture
+        </p>
+      </div>
     </div>
 
     <div class="footer">
       <p>📌 API Endpoint: /api/estimate | 🕐 Response dengan timestamp</p>
-      <p>0920240031 - Praktikum Azure Functions</p>
+      <p>🟢 Status: Production | 🔄 Last Deployment: via GitHub Actions</p>
+      <p>© 2026 - Praktikum Azure Functions</p>
     </div>
   </div>
 
   <script>
-    // Ganti URL ini dengan URL Function App Anda setelah deploy
-    // Contoh: https://func-serverless-0920240031.azurewebsites.net/api/estimate
     const API_BASE_URL = '/api';
-    
 
     document.getElementById('estimateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -288,7 +378,6 @@
       const jumlah = document.getElementById('jumlah').value;
       const jenis = document.getElementById('jenis').value;
       
-      // Validasi input
       if (!jumlah || jumlah < 1) {
         showError('Jumlah peserta harus minimal 1');
         return;
@@ -299,18 +388,15 @@
         return;
       }
       
-      // Sembunyikan hasil dan error sebelumnya
       document.getElementById('result').classList.remove('show');
       document.getElementById('error').classList.remove('show');
       
-      // Tampilkan loading
       const button = document.querySelector('button');
       const originalText = button.textContent;
       button.textContent = '⏳ Menghitung...';
       button.disabled = true;
       
       try {
-        // Panggil API Azure Functions
         const response = await fetch(`${API_BASE_URL}/estimate?jumlah=${jumlah}&jenis=${jenis}`);
         
         if (!response.ok) {
@@ -330,49 +416,47 @@
     });
     
     function displayResult(data) {
-  const resultDiv = document.getElementById('result');
-  
-  // Format currency ke Rupiah
-  const formatRupiah = (number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(number);
-  };
-  
-  // Gunakan field yang sesuai dengan response dari backend
-  const jumlahPeserta = data.jumlah_peserta || data.jumlah || 0;
-  const jenisKonsumsi = data.jenis_konsumsi || data.jenis || 'Tidak diketahui';
-  const hargaPerPeserta = data.harga_per_peserta || 0;
-  const totalBiaya = data.total_estimasi_biaya || data.total || 0;
-  const timestamp = data.timestamp || new Date().toISOString();
-  
-  resultDiv.innerHTML = `
-    <h3 style="color: #667eea; margin-bottom: 15px;">📊 Hasil Estimasi</h3>
-    <div class="result-item">
-      <span class="result-label">Jumlah Peserta</span>
-      <span class="result-value">${jumlahPeserta} orang</span>
-    </div>
-    <div class="result-item">
-      <span class="result-label">Jenis Konsumsi</span>
-      <span class="result-value">${jenisKonsumsi.charAt(0).toUpperCase() + jenisKonsumsi.slice(1)}</span>
-    </div>
-    <div class="result-item">
-      <span class="result-label">Harga per Peserta</span>
-      <span class="result-value">${formatRupiah(hargaPerPeserta)}</span>
-    </div>
-    <div class="result-item">
-      <span class="result-label">Total Estimasi Biaya</span>
-      <span class="result-value">${formatRupiah(totalBiaya)}</span>
-    </div>
-    <div class="timestamp">
-      🕐 Estimasi dibuat: ${new Date(timestamp).toLocaleString('id-ID')}
-    </div>
-  `;
-  
-  resultDiv.classList.add('show');
-}
+      const resultDiv = document.getElementById('result');
+      
+      const formatRupiah = (number) => {
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0
+        }).format(number);
+      };
+      
+      const jumlahPeserta = data.jumlah_peserta || data.jumlah || 0;
+      const jenisKonsumsi = data.jenis_konsumsi || data.jenis || 'Tidak diketahui';
+      const hargaPerPeserta = data.harga_per_peserta || 0;
+      const totalBiaya = data.total_estimasi_biaya || data.total || 0;
+      const timestamp = data.timestamp || new Date().toISOString();
+      
+      resultDiv.innerHTML = `
+        <h3 style="color: #667eea; margin-bottom: 15px;">📊 Hasil Estimasi</h3>
+        <div class="result-item">
+          <span class="result-label">Jumlah Peserta</span>
+          <span class="result-value">${jumlahPeserta} orang</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Jenis Konsumsi</span>
+          <span class="result-value">${jenisKonsumsi.charAt(0).toUpperCase() + jenisKonsumsi.slice(1)}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Harga per Peserta</span>
+          <span class="result-value">${formatRupiah(hargaPerPeserta)}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Total Estimasi Biaya</span>
+          <span class="result-value">${formatRupiah(totalBiaya)}</span>
+        </div>
+        <div class="timestamp">
+          🕐 Estimasi dibuat: ${new Date(timestamp).toLocaleString('id-ID')}
+        </div>
+      `;
+      
+      resultDiv.classList.add('show');
+    }
     
     function showError(message) {
       const errorDiv = document.getElementById('error');
@@ -382,7 +466,6 @@
       `;
       errorDiv.classList.add('show');
       
-      // Auto hide after 5 seconds
       setTimeout(() => {
         errorDiv.classList.remove('show');
       }, 5000);
