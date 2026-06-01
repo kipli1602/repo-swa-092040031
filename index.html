@@ -279,10 +279,8 @@
   <script>
     // Ganti URL ini dengan URL Function App Anda setelah deploy
     // Contoh: https://func-serverless-0920240031.azurewebsites.net/api/estimate
-    const API_BASE_URL = 'https://YOUR-FUNCTION-APP-NAME.azurewebsites.net/api';
+    const API_BASE_URL = '/api';
     
-    // Atau jika menggunakan local untuk testing:
-    // const API_BASE_URL = 'http://localhost:7071/api';
 
     document.getElementById('estimateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
